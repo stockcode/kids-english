@@ -193,6 +193,11 @@ public class BasicTextFieldController extends FieldControllerBase implements IFi
                     return;
                 }
 
+                if (AnkiDroidApp.getCol().hasNote(source)) {
+                    showToast("该单词已经存在");
+                    return;
+                }
+
                 Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 mActivity.startActivityForResult(i, ACTIVITY_SELECT_IMAGE);
                 

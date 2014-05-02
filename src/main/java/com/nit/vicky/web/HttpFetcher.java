@@ -132,7 +132,7 @@ public class HttpFetcher {
         try {
             URL url = new URL(UrlToFile);
 
-            String extension = UrlToFile.substring(UrlToFile.length() - 4);
+            String extension = ".mp3"; //UrlToFile.substring(UrlToFile.length() - 4);
 
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setConnectTimeout(10*1000);

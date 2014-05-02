@@ -1060,6 +1060,7 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
                         }
                         zos.closeEntry();
                         media.put(Integer.toString(c), f.getName());
+                        c++;
                     }
                 }
             }
