@@ -360,7 +360,8 @@ public class Finder {
         // can we skip the note table?
         String sql;
         if (forCardBrowser) {
-            sql = "select c.id, n.sfld, c.did, c.queue, n.tags, n.data from cards c, notes n where c.nid=n.id and ";
+            //sql = "select c.id, n.sfld, c.did, c.queue, n.tags, n.data from cards c, notes n where c.nid=n.id and ";
+            sql = "select c.id, n.flds, c.did, c.queue, n.tags, n.data from cards c, notes n where c.nid=n.id and ";
         } else {
             if (!preds.contains("n.") && !order.contains("n.")) {
                 sql = "select c.id from cards c where ";
