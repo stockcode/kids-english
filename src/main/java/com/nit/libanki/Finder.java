@@ -114,42 +114,33 @@ public class Finder {
         String sql = _query(preds, order, true);
         Cursor cur = null;
         cur = mCol.getDb().getDatabase().rawQuery(sql, args);
-            while (cur.moveToNext()) {
-                String flds = cur.getString(1);
-                String mp3Path = flds.substring(flds.indexOf("sound") + 6);
-                mp3Path = DiskUtil.getStoringDirectory() + "/" + mp3Path.substring(0, mp3Path.length() - 1);
-                File file = new File(mp3Path);
-                File newFile = new File(mp3Path.substring(0, mp3Path.length() - 4) + ".mp3");
-                Boolean isSucceed = file.renameTo(newFile);
-                Log.d("mp3", file.getPath() + " is " + isSucceed);
 
-            };
-//        try {
-//            cur = mCol.getDb().getDatabase().rawQuery(sql, args);
-//            while (cur.moveToNext()) {
-//                HashMap<String, String> map = new HashMap<String, String>();
-//                map.put("id", cur.getString(0));
-//                map.put("sfld", cur.getString(1));
-//                map.put("deck", deckNames.get(cur.getString(2)));
-//                int queue = cur.getInt(3);
-//                String tags = cur.getString(4);
-//                map.put("flags", Integer.toString((queue == -1 ? 1 : 0) + (tags.matches(".*[Mm]arked.*") ? 2 : 0)));
-//                map.put("tags", tags);
-//                map.put("word", cur.getString(5));
-//                res.add(map);
-//            }
-//        } catch (SQLException e) {
-//            // invalid grouping
-//            Log.e(AnkiDroidApp.TAG, "Invalid grouping, sql: " + sql);
-//            return new ArrayList<HashMap<String, String>>();
-//        } finally {
-//            if (cur != null) {
-//                cur.close();
-//            }
-//        }
-//        if (rev) {
-//            Collections.reverse(res);
-//        }
+        try {
+            cur = mCol.getDb().getDatabase().rawQuery(sql, args);
+            while (cur.moveToNext()) {
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put("id", cur.getString(0));
+                map.put("sfld", cur.getString(1));
+                map.put("deck", deckNames.get(cur.getString(2)));
+                int queue = cur.getInt(3);
+                String tags = cur.getString(4);
+                map.put("flags", Integer.toString((queue == -1 ? 1 : 0) + (tags.matches(".*[Mm]arked.*") ? 2 : 0)));
+                map.put("tags", tags);
+                map.put("word", cur.getString(5));
+                res.add(map);
+            }
+        } catch (SQLException e) {
+            // invalid grouping
+            Log.e(AnkiDroidApp.TAG, "Invalid grouping, sql: " + sql);
+            return new ArrayList<HashMap<String, String>>();
+        } finally {
+            if (cur != null) {
+                cur.close();
+            }
+        }
+        if (rev) {
+            Collections.reverse(res);
+        }
         return res;
     }
 
@@ -373,8 +364,7 @@ public class Finder {
         // can we skip the note table?
         String sql;
         if (forCardBrowser) {
-            //sql = "select c.id, n.sfld, c.did, c.queue, n.tags, n.data from cards c, notes n where c.nid=n.id and ";
-            sql = "select c.id, n.flds, c.did, c.queue, n.tags, n.data from cards c, notes n where c.nid=n.id and SUBSTR(n.flds, -5) <> '.mp3]' and ";
+            sql = "select c.id, n.sfld, c.did, c.queue, n.tags, n.data from cards c, notes n where c.nid=n.id and ";
         } else {
             if (!preds.contains("n.") && !order.contains("n.")) {
                 sql = "select c.id from cards c where ";
