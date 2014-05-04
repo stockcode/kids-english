@@ -1019,7 +1019,7 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
         Object[] data = params[0].getObjArray();
         String colPath = (String) data[0];
         String apkgPath = (String) data[1];
-        boolean includeMedia = (Boolean) data[2];
+        boolean includeMedia = true; //(Boolean) data[2];
 
         byte[] buf = new byte[1024];
         try {
