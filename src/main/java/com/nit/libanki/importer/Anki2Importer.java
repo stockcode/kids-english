@@ -498,23 +498,23 @@ public class Anki2Importer {
             		card[8] = (Long) card[8] - aheadBy;
             	}
             	// if odid true, convert card from filtered to normal
-            	if ((Long)card[15] != 0) {
+            	//if ((Long)card[15] != 0) {
             		// odid
             		card[15] = 0;
             		// odue
-            		card[8] = card[14];
+            		card[8] = 0; //card[14];
             		card[14] = 0;
             		// queue
-            		if ((Integer)card[6] == 1) { // type
+            		//if ((Integer)card[6] == 1) { // type
             			card[7] = 0;
-            		} else {
-            			card[7] = card[6];
-            		}
+            		//} else {
+            		//	card[7] = card[6];
+            		//}
             		// type
-            		if ((Integer)card[6] == 1) {
+            		//if ((Integer)card[6] == 1) {
             			card[6] = 0;
-            		}
-            	}
+            		//}
+            	//}
             	cards.add(card);
             	// we need to import revlog, rewriting card ids and bumping usn
             	Cursor cur2 = null;

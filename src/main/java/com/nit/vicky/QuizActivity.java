@@ -1,5 +1,7 @@
 package com.nit.vicky;
 
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -13,6 +15,7 @@ import android.widget.*;
 import com.nit.async.DeckTask;
 import com.nit.libanki.*;
 import com.nit.libanki.Collection;
+import com.nit.themes.StyledDialog;
 import com.nit.themes.Themes;
 import com.nit.widget.ScaleImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -52,12 +55,16 @@ public class QuizActivity extends AnkiActivity {
     private int mStatisticBarsHeight;
 
     private int tryCount = 3;
+    private int showCount = 10;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Themes.applyTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.quiz);
+
+        SharedPreferences prefs = AnkiDroidApp.getSharedPrefs(AnkiDroidApp.getInstance().getBaseContext());
+        showCount = prefs.getInt("showCount", 10);
 
         // The hardware buttons should control the music volume while reviewing.
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -73,6 +80,7 @@ public class QuizActivity extends AnkiActivity {
         mCardTimer = (Chronometer) findViewById(R.id.card_time);
 
         listView = (StaggeredGridView) findViewById(R.id.gridview);
+        listView.setColumnCount(showCount/2);
         listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(new StaggeredGridView.OnItemClickListener() {
             @Override
@@ -114,6 +122,7 @@ public class QuizActivity extends AnkiActivity {
                 null, 0));
 
         initTimer();
+
     }
 
     @Override
@@ -125,6 +134,9 @@ public class QuizActivity extends AnkiActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.showhint:
+                showHint();
+                return true;
             case R.id.playsound:
                 playSound();
                 return true;
@@ -135,6 +147,21 @@ public class QuizActivity extends AnkiActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showHint() {
+
+        StyledDialog.Builder builder = new StyledDialog.Builder(QuizActivity.this);
+        builder.setTitle("提示");
+        builder.setIcon(R.drawable.ic_dialog_alert);
+        builder.setMessage(mCurrentCard.note().getmData());
+        builder.setPositiveButton("关闭",  new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        builder.show();
     }
 
     public class ImageAdapter extends BaseAdapter {
@@ -171,7 +198,7 @@ public class QuizActivity extends AnkiActivity {
 
             ImageLoader.getInstance().displayImage(imageUrls.get(position), holder.imageView, new SimpleImageLoadingListener(){
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    if (position == 4) playSound();
+                    if (position == showCount - 1) playSound();
                 }
             });
 
@@ -274,7 +301,7 @@ public class QuizActivity extends AnkiActivity {
             do {
                 Integer num = rd.nextInt(values[0].getCards().size());
                 if (!nums.contains(num)) nums.add(num);
-            } while (nums.size() < 10);
+            } while (nums.size() < showCount - 1);
 
             for(Integer num : nums) {
                 mCards.add(values[0].getCards().get(num));

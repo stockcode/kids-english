@@ -49,6 +49,13 @@
                 android:key="internalMemory"
                 android:summary="@string/pref_internal_memory_summ"
                 android:title="@string/pref_internal_memory" />
+            <com.hlidskialf.android.preference.SeekBarPreference
+                android:key="showCount"
+                android:summary="显示要选择的图片数量"
+                android:title="显示图片数量"
+                app:interval="1"
+                app:min="1"
+                android:max="10" />
         </PreferenceCategory>
         <PreferenceCategory android:title="@string/pref_cat_backup" >
             <CheckBoxPreference

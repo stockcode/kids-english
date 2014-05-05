@@ -101,7 +101,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
             "gestureLongclick", "gestureTapLeft", "newSpread", "useCurrent"};//, "theme" };
     private static String[] mShowValueInSummSeek = { "relativeDisplayFontSize", "relativeCardBrowserFontSize",
             "relativeImageSize", "answerButtonSize", "whiteBoardStrokeWidth", "minShakeIntensity", "swipeSensibility",
-            "timeoutAnswerSeconds", "timeoutQuestionSeconds", "animationDuration", "backupMax", "dayOffset" };
+            "timeoutAnswerSeconds", "timeoutQuestionSeconds", "animationDuration", "backupMax", "dayOffset", "showCount" };
     private static String[] mShowValueInSummEditText = { "simpleInterfaceExcludeTags" };
     private static String[] mShowValueInSummNumRange = { "timeLimit", "learnCutoff" };
     private TreeMap<String, String> mListsToUpdate = new TreeMap<String, String>();
@@ -120,6 +120,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
     private ListPreference useCurrent;
     private ListPreference newSpread;
     private SeekBarPreference dayOffset;
+    private SeekBarPreference showCount;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
