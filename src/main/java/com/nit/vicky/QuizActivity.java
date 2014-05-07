@@ -301,7 +301,7 @@ public class QuizActivity extends AnkiActivity {
             do {
                 Integer num = rd.nextInt(values[0].getCards().size());
                 if (!nums.contains(num)) nums.add(num);
-            } while (nums.size() < showCount - 1);
+            } while (nums.size() < showCount);
 
             for(Integer num : nums) {
                 mCards.add(values[0].getCards().get(num));
@@ -316,11 +316,11 @@ public class QuizActivity extends AnkiActivity {
 
             Collections.shuffle(imageUrls);
 
-            if (imageUrls.size() > 10) {
+            if (imageUrls.size() > showCount) {
                 int rid = 0;
                 int lid = imageUrls.indexOf(mCurrentURL);
                 while (rid == lid) {
-                    rid = rd.nextInt(10);
+                    rid = rd.nextInt(showCount);
                 }
 
                 imageUrls.remove(rid);
