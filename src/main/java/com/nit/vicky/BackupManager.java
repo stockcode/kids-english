@@ -50,7 +50,7 @@ public class BackupManager {
     private static boolean mUseBackups = true;
 
     /** Number of day after which a backup is done on first non-studyoptions-opening (for safety reasons) */
-    public static final int SAFETY_BACKUP_THRESHOLD = 3;
+    public static final int SAFETY_BACKUP_THRESHOLD = 1;
 
     /** Number of hours after which a backup new backup is created */
     public static final int BACKUP_INTERVAL = 5;
