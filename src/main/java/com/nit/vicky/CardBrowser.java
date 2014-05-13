@@ -28,43 +28,35 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.ContextMenu;
+import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
 import com.nit.anim.ActivityTransitionAnimation;
+import com.nit.libanki.*;
 import com.nit.vicky.multimediacard.activity.MultimediaCardEditorActivity;
 import com.nit.vicky.receiver.SdCardReceiver;
 import com.nit.async.DeckTask;
 import com.nit.async.DeckTask.TaskData;
-import com.nit.libanki.Card;
-import com.nit.libanki.CardStats;
-import com.nit.libanki.Collection;
-import com.nit.libanki.Note;
 import com.nit.themes.StyledDialog;
 import com.nit.themes.StyledOpenCollectionDialog;
 import com.nit.themes.StyledProgressDialog;
 import com.nit.themes.Themes;
 import com.nit.upgrade.Upgrade;
+import com.nit.widget.ScaleImageView;
 import com.nit.widget.WidgetStatus;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
+import com.origamilabs.library.views.StaggeredGridView;
 import org.json.JSONException;
 
 import java.util.ArrayList;
@@ -80,7 +72,10 @@ public class CardBrowser extends Activity {
     // private ArrayList<HashMap<String, String>> mAllCards;
     private HashMap<String, String> mDeckNames;
     private ListView mCardsListView;
+    private StaggeredGridView mCardsGridView;
+
     private SimpleAdapter mCardsAdapter;
+    private ImageAdapter mGridAdapter = new ImageAdapter();
     private EditText mSearchEditText;
     private String mSearchTerms;
     private String mRestrictOnDeck;
@@ -319,7 +314,7 @@ public class CardBrowser extends Activity {
             }
         });
 
-        mCardsListView.setAdapter(mCardsAdapter);
+        //mCardsListView.setAdapter(mCardsAdapter);
         mCardsListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -337,6 +332,25 @@ public class CardBrowser extends Activity {
         });
         registerForContextMenu(mCardsListView);
 
+        mCardsGridView = (StaggeredGridView) findViewById(R.id.card_browser_gridview);
+        mCardsGridView.setAdapter(mGridAdapter);
+        mCardsGridView.setOnItemClickListener(new StaggeredGridView.OnItemClickListener() {
+            @Override
+            public void onItemClick(StaggeredGridView parent, View view, int position, long id) {
+                mPositionInCardsList = position;
+                long cardId = Long.parseLong(mCards.get(mPositionInCardsList).get("id"));
+                sCardBrowserCard = mCol.getCard(cardId);
+                Intent editCard = new Intent(CardBrowser.this, MultimediaCardEditorActivity.class);
+                //editCard.putExtra(CardEditor.EXTRA_CALLER, CardEditor.CALLER_CARDBROWSER_EDIT);
+                editCard.putExtra(MultimediaCardEditorActivity.EXTRA_CARD_ID, sCardBrowserCard.getId());
+                startActivityForResult(editCard, EDIT_CARD);
+                if (AnkiDroidApp.SDK_VERSION > 4) {
+                    ActivityTransitionAnimation.slide(CardBrowser.this, ActivityTransitionAnimation.LEFT);
+                }
+                String imgURL = Utils.getBaseUrl(mCol.getMedia().getDir()) + Uri.encode(sCardBrowserCard.getQuestion(true).split("'")[1]);
+                Toast.makeText(CardBrowser.this, imgURL, Toast.LENGTH_LONG).show();
+            }
+        });
         mSearchEditText = (EditText) findViewById(R.id.card_browser_search);
         mSearchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -546,8 +560,8 @@ public class CardBrowser extends Activity {
                     new DeckTask.TaskData(mCol.getSched(), sCardBrowserCard, 3));
         } else if (requestCode == EDIT_CARD && resultCode != RESULT_CANCELED) {
             // Log.i(AnkiDroidApp.TAG, "CardBrowser: Saving card...");
-            DeckTask.launchDeckTask(DeckTask.TASK_TYPE_UPDATE_FACT, mUpdateCardHandler,
-                    new DeckTask.TaskData(mCol.getSched(), sCardBrowserCard, false));
+//            DeckTask.launchDeckTask(DeckTask.TASK_TYPE_UPDATE_FACT, mUpdateCardHandler,
+//                    new DeckTask.TaskData(mCol.getSched(), sCardBrowserCard, false));
         } else if (requestCode == ADD_NOTE && resultCode == RESULT_OK) {
             mSearchTerms = mSearchEditText.getText().toString().toLowerCase();
             searchCards();
@@ -818,7 +832,8 @@ public class CardBrowser extends Activity {
 
 
     private void updateList() {
-        mCardsAdapter.notifyDataSetChanged();
+        //mCardsAdapter.notifyDataSetChanged();
+        mGridAdapter.notifyDataSetChanged();
         int count = mCards.size();
         AnkiDroidApp.getCompat().setSubtitle(
                 this,
@@ -1318,4 +1333,52 @@ public class CardBrowser extends Activity {
         }
     }
 
+    public class ImageAdapter extends BaseAdapter {
+        @Override
+        public int getCount() {
+            return mCards.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            final ViewHolder holder;
+
+            if (convertView == null) {
+                LayoutInflater layoutInflator = LayoutInflater.from(parent.getContext());
+                convertView = layoutInflator.inflate(R.layout.quiz_grid_image, null);
+                holder = new ViewHolder();
+                holder.imageView = (ScaleImageView) convertView.findViewById(R.id.img_thumb);
+                holder.contentView = (TextView) convertView.findViewById(R.id.img_size);
+                convertView.setTag(holder);
+
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            long cardId = Long.parseLong(mCards.get(position).get("id"));
+            Card sCard = mCol.getCard(cardId);
+            String imgURL = Utils.getBaseUrl(mCol.getMedia().getDir()) + Uri.encode(sCard.getQuestion(true).split("'")[1]);
+
+            ImageLoader.getInstance().displayImage(imgURL, holder.imageView);
+
+            holder.contentView.setText(sCard.note().getmData());
+
+            return convertView;
+        }
+
+        class ViewHolder {
+            public ScaleImageView imageView;
+            TextView contentView;
+        }
+    }
 }

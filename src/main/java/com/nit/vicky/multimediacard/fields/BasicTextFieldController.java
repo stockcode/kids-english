@@ -64,6 +64,8 @@ public class BasicTextFieldController extends FieldControllerBase implements IFi
 
     private EditText mEditText;
 
+    Boolean mAddNote = true;
+
     // This is used to copy from another field value to this field
     private ArrayList<String> mPossibleClones;
 
@@ -73,6 +75,9 @@ public class BasicTextFieldController extends FieldControllerBase implements IFi
         mEditText = new EditText(mActivity);
         mEditText.setMinLines(3);
         mEditText.setText(mField.getText());
+
+        mAddNote = mField.getName() != null;
+
         layout.addView(mEditText, LinearLayout.LayoutParams.FILL_PARENT);
 
         LinearLayout layoutTools = new LinearLayout(mActivity);
@@ -122,7 +127,7 @@ public class BasicTextFieldController extends FieldControllerBase implements IFi
                     return;
                 }
 
-                if (AnkiDroidApp.getCol().hasNote(source)) {
+                if (AnkiDroidApp.getCol().hasNote(source) && mAddNote) {
                     showToast("该单词已经存在");
                     return;
                 }
@@ -193,7 +198,7 @@ public class BasicTextFieldController extends FieldControllerBase implements IFi
                     return;
                 }
 
-                if (AnkiDroidApp.getCol().hasNote(source)) {
+                if (AnkiDroidApp.getCol().hasNote(source) && mAddNote) {
                     showToast("该单词已经存在");
                     return;
                 }

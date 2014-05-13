@@ -53,6 +53,7 @@ public class EditFieldActivity extends FragmentActivity {
     IMultimediaEditableNote mNote;
     int mFieldIndex;
 
+
     private IFieldController mFieldController;
 
 

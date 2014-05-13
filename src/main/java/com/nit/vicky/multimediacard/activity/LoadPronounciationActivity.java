@@ -256,7 +256,7 @@ public class LoadPronounciationActivity extends Activity implements OnCancelList
 
         @Override
         protected String doInBackground(Void... params) {
-            return HttpFetcher.downloadFileToSdCard(mAddress, mActivity, "pronunc");
+            return HttpFetcher.downloadFileToSdCard(mAddress, mActivity, "pronunc", true);
         }
 
 

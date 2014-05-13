@@ -15,7 +15,7 @@
     <TextView
         android:id="@+id/img_size"
         android:layout_width="wrap_content"
-        android:layout_height="10dip"
+        android:layout_height="20dip"
         android:singleLine="false"
         android:textColor="#656565" />
 </LinearLayout>

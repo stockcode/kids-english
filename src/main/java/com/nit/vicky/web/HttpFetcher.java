@@ -118,21 +118,24 @@ public class HttpFetcher {
     // }
     // }
 
-    public static String downloadFileToSdCard(String UrlToFile, Context context, String prefix) {
-        String str = downloadFileToSdCardMethod(UrlToFile, context, prefix, "GET");
+    public static String downloadFileToSdCard(String UrlToFile, Context context, String prefix, Boolean isMP3) {
+        String str = downloadFileToSdCardMethod(UrlToFile, context, prefix, "GET", isMP3);
         if (str.startsWith("FAIL")) {
-            str = downloadFileToSdCardMethod(UrlToFile, context, prefix, "POST");
+            str = downloadFileToSdCardMethod(UrlToFile, context, prefix, "POST", isMP3);
         }
 
         return str;
     }
 
 
-    public static String downloadFileToSdCardMethod(String UrlToFile, Context context, String prefix, String method) {
+    public static String downloadFileToSdCardMethod(String UrlToFile, Context context, String prefix, String method, Boolean isMP3) {
         try {
             URL url = new URL(UrlToFile);
 
-            String extension = ".mp3"; //UrlToFile.substring(UrlToFile.length() - 4);
+            String extension = ".mp3";
+
+
+            if (!isMP3) extension = UrlToFile.substring(UrlToFile.lastIndexOf("."));
 
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setConnectTimeout(10*1000);

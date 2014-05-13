@@ -151,7 +151,7 @@ public class SearchImageActivity extends Activity implements DialogInterface.OnC
 
         @Override
         protected String doInBackground(Void... params) {
-            return HttpFetcher.downloadFileToSdCard(mAddress, mActivity, "imgsearch");
+            return HttpFetcher.downloadFileToSdCard(mAddress, mActivity, "imgsearch", false);
         }
 
 
