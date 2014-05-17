@@ -191,7 +191,7 @@ public class NoteService {
                         return;
                     }
 
-                    File outFile = new File(mediaDir + inFile.getName());
+                    File outFile = new File(mediaDir + inFile.getName().replaceAll(" ", "_"));
 
                     if (!outFile.exists()) {
                         if (field.hasTemporaryMedia()) {
