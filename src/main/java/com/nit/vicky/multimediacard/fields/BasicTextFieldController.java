@@ -88,6 +88,7 @@ public class BasicTextFieldController extends FieldControllerBase implements IFi
                 LinearLayout.LayoutParams.WRAP_CONTENT, 1);
 
         createClearButton(layoutTools, p);
+        createDupButton(layoutTools, p);
 
         LinearLayout layoutTools2 = new LinearLayout(mActivity);
         layoutTools2.setOrientation(LinearLayout.HORIZONTAL);
@@ -150,6 +151,21 @@ public class BasicTextFieldController extends FieldControllerBase implements IFi
             @Override
             public void onClick(View v) {
                 mEditText.setText("");
+
+            }
+        });
+    }
+
+    private void createDupButton(LinearLayout layoutTools, LayoutParams p) {
+        Button dupButton = new Button(mActivity);
+        dupButton.setText("允许重复");
+        layoutTools.addView(dupButton, p);
+
+        dupButton.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                mAddNote=false;
 
             }
         });

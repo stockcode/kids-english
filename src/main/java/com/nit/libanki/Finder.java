@@ -557,8 +557,9 @@ public class Finder {
     private String _findText(String val, List<String> args) {
         val = val.replace("*", "%");
         args.add("%" + val + "%");
-        args.add("%" + val + "%");
-        return "(n.sfld like ? escape '\\' or n.flds like ? escape '\\')";
+        //args.add("%" + val + "%");
+        //return "(n.sfld like ? escape '\\' or n.flds like ? escape '\\')";
+        return "(n.data like ? escape '\\' )";
     }
 
 
