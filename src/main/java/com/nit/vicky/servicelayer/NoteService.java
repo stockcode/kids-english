@@ -19,6 +19,7 @@
 
 package com.nit.vicky.servicelayer;
 
+import com.nit.utils.DiskUtil;
 import com.nit.vicky.AnkiDroidApp;
 import com.nit.vicky.multimediacard.IMultimediaEditableNote;
 import com.nit.vicky.multimediacard.fields.AudioField;
@@ -191,9 +192,14 @@ public class NoteService {
                         return;
                     }
 
+
                     File outFile = new File(mediaDir + inFile.getName().replaceAll(" ", "_"));
 
-                    if (!outFile.exists()) {
+                    if (outFile.exists()) {
+                        outFile = File.createTempFile("imgsearch", ".jpg", DiskUtil.getStoringDirectory());
+                    }
+
+
                         if (field.hasTemporaryMedia()) {
                             // Move
                             inFile.renameTo(outFile);
@@ -222,7 +228,7 @@ public class NoteService {
                             default:
                                 break;
                         }
-                    }
+
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);

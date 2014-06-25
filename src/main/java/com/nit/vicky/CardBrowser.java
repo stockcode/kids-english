@@ -1371,7 +1371,7 @@ public class CardBrowser extends Activity {
 
             ImageLoader.getInstance().displayImage(imgURL, holder.imageView);
 
-            holder.contentView.setText(sCard.note().getmData());
+            holder.contentView.setText(sCard.note().getmData()+":" + sCard.getFactor());
 
             return convertView;
         }
