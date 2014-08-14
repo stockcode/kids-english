@@ -1,17 +1,17 @@
 buildscript {
-  repositories {
-    mavenCentral()
-  }
+    repositories {
+        mavenCentral()
+    }
 
-  dependencies {
-    classpath 'com.android.tools.build:gradle:0.6.+'
-  }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.10.+'
+    }
 }
 
 apply plugin: 'android'
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.8'
+    gradleVersion = '1.12'
 }
 
 repositories {
@@ -27,6 +27,6 @@ dependencies {
 
 android {
     compileSdkVersion 17
-    buildToolsVersion "17.0.0"
+    buildToolsVersion "19.0.0"
 
 }
