@@ -61,6 +61,7 @@ public class BasicTextFieldController extends FieldControllerBase implements IFi
     private static final int REQUEST_CODE_TRANSLATE_COLORDICT = 103;
     private static final int REQUEST_CODE_IMAGE_SEARCH = 104;
     protected static final int ACTIVITY_SELECT_IMAGE = 105;
+    protected static final int ACTIVITY_SELECT_MP3 = 106;
 
     private EditText mEditText;
 
@@ -88,6 +89,7 @@ public class BasicTextFieldController extends FieldControllerBase implements IFi
                 LinearLayout.LayoutParams.WRAP_CONTENT, 1);
 
         createClearButton(layoutTools, p);
+        createMP3Button(layoutTools, p);
         createDupButton(layoutTools, p);
 
         LinearLayout layoutTools2 = new LinearLayout(mActivity);
@@ -198,6 +200,33 @@ public class BasicTextFieldController extends FieldControllerBase implements IFi
         layoutTools.addView(btnPronounce, p);
     }
 
+    private void createMP3Button(LinearLayout layoutTool, LayoutParams ps) {
+        Button btnTranslate = new Button(mActivity);
+        btnTranslate.setText("MP3");
+        btnTranslate.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String source = mEditText.getText().toString();
+
+                // Checks and warnings
+                if (source.length() == 0) {
+                    showToast(gtxt(R.string.multimedia_editor_text_field_editing_no_text));
+                    return;
+                }
+
+                if (AnkiDroidApp.getCol().hasNote(source) && mAddNote) {
+                    showToast("该单词已经存在");
+                    return;
+                }
+
+                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+                mActivity.startActivityForResult(i, ACTIVITY_SELECT_MP3);
+            }
+        });
+
+        layoutTool.addView(btnTranslate, ps);
+
+    }
 
     // Here is all the functionality to provide translations
     private void createTranslateButton(LinearLayout layoutTool, LayoutParams ps) {
@@ -221,40 +250,10 @@ public class BasicTextFieldController extends FieldControllerBase implements IFi
 
                 Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 mActivity.startActivityForResult(i, ACTIVITY_SELECT_IMAGE);
-                
-//                if (source.contains(" ")) {
-//                    showToast(gtxt(R.string.multimedia_editor_text_field_editing_many_words));
-//                }
-//
-//                // Pick from two translation sources
-//                PickStringDialogFragment fragment = new PickStringDialogFragment();
-//
-//                ArrayList<String> translationSources = new ArrayList<String>();
-//                translationSources.add("Glosbe.com");
-//                translationSources.add("ColorDict");
-//
-//                fragment.setChoices(translationSources);
-//                fragment.setOnclickListener(new DialogInterface.OnClickListener() {
-//
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        if (which == 0) {
-//                            startTranslationWithGlosbe();
-//                        } else if (which == 1) {
-//                            startTranslationWithColorDict();
-//                        }
-//                    }
-//                });
-//
-//                fragment.setTitle(gtxt(R.string.multimedia_editor_trans_pick_translation_source));
-//
-//                fragment.show(mActivity.getSupportFragmentManager(), "pick.translation.source");
             }
         });
 
         layoutTool.addView(btnTranslate, ps);
-
-        // flow continues in Start Translation with...
 
     }
 
@@ -328,6 +327,22 @@ public class BasicTextFieldController extends FieldControllerBase implements IFi
             imgField.setImagePath(imgPath);
             imgField.setHasTemporaryMedia(true);
             mActivity.handleFieldChanged(imgField);
+        }else if (requestCode == ACTIVITY_SELECT_MP3 && resultCode == Activity.RESULT_OK) {
+            Uri selectedImage = data.getData();
+            // // Log.d(TAG, selectedImage.toString());
+            String[] filePathColumn = {MediaStore.Audio.Media.DATA};
+
+            Cursor cursor = mActivity.getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String imgPath = cursor.getString(columnIndex);
+
+            AudioField af = new AudioField();
+            af.setAudioPath(imgPath);
+            // This is done to delete the file later.
+            af.setHasTemporaryMedia(true);
+            mActivity.handleFieldChanged(af);
         }
     }
 
