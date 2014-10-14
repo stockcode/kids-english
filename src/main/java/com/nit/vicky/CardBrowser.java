@@ -347,7 +347,7 @@ public class CardBrowser extends Activity {
                 if (AnkiDroidApp.SDK_VERSION > 4) {
                     ActivityTransitionAnimation.slide(CardBrowser.this, ActivityTransitionAnimation.LEFT);
                 }
-                String imgURL = Utils.getBaseUrl(mCol.getMedia().getDir()) + Uri.encode(sCardBrowserCard.getQuestion(true).split("'")[1]);
+                String imgURL = getImgURL(sCardBrowserCard);
                 Toast.makeText(CardBrowser.this, imgURL, Toast.LENGTH_LONG).show();
             }
         });
@@ -390,6 +390,14 @@ public class CardBrowser extends Activity {
         if (!preferences.getBoolean("cardBrowserNoSearchOnOpen", false)) {
             searchCards();
         }
+    }
+
+    private String getImgURL(Card card) {
+        String imgURL = "error.jpg";
+        String[] img = card.getQuestion(true).split("'");
+        if (img.length > 1)  imgURL = Utils.getBaseUrl(mCol.getMedia().getDir()) + Uri.encode(img[1]);
+
+        return imgURL;
     }
 
 
@@ -1367,7 +1375,10 @@ public class CardBrowser extends Activity {
 
             long cardId = Long.parseLong(mCards.get(position).get("id"));
             Card sCard = mCol.getCard(cardId);
-            String imgURL = Utils.getBaseUrl(mCol.getMedia().getDir()) + Uri.encode(sCard.getQuestion(true).split("'")[1]);
+
+
+
+            String imgURL = getImgURL(sCard);
 
             ImageLoader.getInstance().displayImage(imgURL, holder.imageView);
 

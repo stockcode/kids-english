@@ -310,7 +310,7 @@ public class QuizActivity extends AnkiActivity {
             for(HashMap<String, String> map : mCards) {
                 long cardId = Long.parseLong(map.get("id"));
                 Card card = mCol.getCard(cardId);
-                String imgURL = mBaseUrl + Uri.encode(card.getQuestion(true).split("'")[1]);
+                String imgURL = getImgURL(card);
                 if (!imageUrls.contains(imgURL))    imageUrls.add(imgURL);
             }
 
@@ -331,6 +331,14 @@ public class QuizActivity extends AnkiActivity {
             mAdapter.notifyDataSetChanged();
         }
     };
+
+    private String getImgURL(Card card) {
+        String imgURL = "error.jpg";
+        String[] img = card.getQuestion(true).split("'");
+        if (img.length > 1)  imgURL = mBaseUrl + Uri.encode(img[1]);
+
+        return imgURL;
+    }
 
     private void updateForNewCard() {
         updateScreenCounts();
