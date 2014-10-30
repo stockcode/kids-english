@@ -42,6 +42,7 @@ import com.nit.libanki.Utils;
 import com.nit.libanki.importer.Anki2Importer;
 import com.nit.widget.WidgetStatus;
 
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,7 +68,6 @@ import java.util.TreeSet;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -913,7 +913,7 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
         String colFile = fileDir + "/collection.anki2";
         ZipFile zip;
         try {
-            zip = new ZipFile(new File(path), ZipFile.OPEN_READ);
+            zip = new ZipFile(new File(path));
         } catch (IOException e) {
             Log.e(AnkiDroidApp.TAG, "doInBackgroundImportReplace - Error while unzipping: ", e);
             AnkiDroidApp.saveExceptionReportFile(e, "doInBackgroundImportReplace0");

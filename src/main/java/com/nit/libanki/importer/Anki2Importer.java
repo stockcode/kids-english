@@ -29,6 +29,7 @@ import com.nit.libanki.Collection;
 import com.nit.libanki.Media;
 import com.nit.libanki.Storage;
 import com.nit.libanki.Utils;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,7 +37,6 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.ZipFile;
 
 public class Anki2Importer {
 
@@ -69,7 +69,7 @@ public class Anki2Importer {
 
 	public Anki2Importer (Collection col, String file, DeckTask.ProgressCallback progressCallback) throws IOException {
 		mCol = col;
-		mZip = new ZipFile(new File(file), ZipFile.OPEN_READ);
+		mZip = new ZipFile(new File(file));
 		mTotal = 0;
 		mLog = new ArrayList<String>();
         mProgress = progressCallback;

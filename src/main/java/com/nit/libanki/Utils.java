@@ -35,6 +35,8 @@ import com.nit.vicky.AnkiDroidApp;
 import com.nit.vicky.AnkiFont;
 import com.nit.vicky.R;
 import com.mindprod.common11.BigDate;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -78,7 +80,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /**
  * TODO comments
@@ -737,7 +738,7 @@ public class Utils {
         BufferedOutputStream bos = null;
         try {
             for (String requestedEntry : zipEntries) {
-                ZipEntry ze = zipFile.getEntry(requestedEntry);
+                ZipArchiveEntry ze = zipFile.getEntry(requestedEntry);
                 if (ze != null) {
                     String name = ze.getName();
                     if (zipEntryToFilenameMap.containsKey(name)) {
