@@ -139,7 +139,7 @@ public class Sound {
     }
 
 
-    public static void playOkSound(AssetManager assetManager, OnCompletionListener playAllListener) {
+    public static void playOkSound(String name, OnCompletionListener playAllListener) {
         // Log.i(AnkiDroidApp.TAG, "Playing " + soundPath + " has listener? " + Boolean.toString(playAllListener != null));
 
 
@@ -149,9 +149,12 @@ public class Sound {
                 sMediaPlayer.reset();
 
             try {
-                AssetFileDescriptor afd = assetManager.openFd(okList.get(rd.nextInt(okList.size())));
+                File mediaDir = new File(AnkiDroidApp.getCurrentAnkiDroidUserDir(name) + File.separator + "ok");
 
-                sMediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                File[] mediaFiles = mediaDir.listFiles();
+
+                sMediaPlayer.setDataSource(mediaFiles[rd.nextInt(mediaFiles.length)].getPath());
+
                 sMediaPlayer.setVolume(AudioManager.STREAM_MUSIC, AudioManager.STREAM_MUSIC);
                 sMediaPlayer.prepare();
                 if (playAllListener != null)
@@ -164,7 +167,7 @@ public class Sound {
 
     }
 
-    public static void playErrSound(AssetManager assetManager, OnCompletionListener playAllListener) {
+    public static void playErrSound(String name, OnCompletionListener playAllListener) {
         // Log.i(AnkiDroidApp.TAG, "Playing " + soundPath + " has listener? " + Boolean.toString(playAllListener != null));
 
 
@@ -174,9 +177,11 @@ public class Sound {
             sMediaPlayer.reset();
 
         try {
-            AssetFileDescriptor afd = assetManager.openFd(errList.get(rd.nextInt(errList.size())));
+            File mediaDir = new File(AnkiDroidApp.getCurrentAnkiDroidUserDir(name) + File.separator + "err");
 
-            sMediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            File[] mediaFiles = mediaDir.listFiles();
+
+            sMediaPlayer.setDataSource(mediaFiles[rd.nextInt(mediaFiles.length)].getPath());
             sMediaPlayer.setVolume(AudioManager.STREAM_MUSIC, AudioManager.STREAM_MUSIC);
             sMediaPlayer.prepare();
             if (playAllListener != null)

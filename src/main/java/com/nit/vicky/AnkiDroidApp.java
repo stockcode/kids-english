@@ -254,6 +254,10 @@ public class AnkiDroidApp extends Application {
         return getCurrentAnkiDroidDirectory() + File.separator + "collection.media";
     }
 
+    public static String getCurrentAnkiDroidUserDir(String name) {
+        return getCurrentAnkiDroidDirectory() + File.separator + name;
+    }
+
     public static void createDirectoryIfMissing(File decksDirectory) {
         if (!decksDirectory.isDirectory()) {
             decksDirectory.mkdirs();

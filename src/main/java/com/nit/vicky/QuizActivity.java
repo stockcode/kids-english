@@ -56,6 +56,7 @@ public class QuizActivity extends AnkiActivity {
 
     private int tryCount = 3;
     private int showCount = 10;
+    private String name = "vicky";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class QuizActivity extends AnkiActivity {
 
         SharedPreferences prefs = AnkiDroidApp.getSharedPrefs(AnkiDroidApp.getInstance().getBaseContext());
         showCount = prefs.getInt("showCount", 10);
+        name = prefs.getString("name", "vicky");
 
         // The hardware buttons should control the music volume while reviewing.
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -87,7 +89,7 @@ public class QuizActivity extends AnkiActivity {
             public void onItemClick(StaggeredGridView parent, View view, int position, long id) {
                 if (mCurrentURL.equals(imageUrls.get(position))){
 
-                    Sound.playOkSound(parent.getContext().getAssets(), new Sound.PlayAllCompletionListener(0) {
+                    Sound.playOkSound(name, new Sound.PlayAllCompletionListener(0) {
                         public void onCompletion(MediaPlayer mp) {
                             DeckTask.launchDeckTask(DeckTask.TASK_TYPE_ANSWER_CARD, mRenderCardHandler, new DeckTask.TaskData(mSched,
                                     mCurrentCard, EASE_HARD));
@@ -95,7 +97,7 @@ public class QuizActivity extends AnkiActivity {
                     });
 
                 } else {
-                    Sound.playErrSound(parent.getContext().getAssets(), new Sound.PlayAllCompletionListener(0) {
+                    Sound.playErrSound(name, new Sound.PlayAllCompletionListener(0) {
                         public void onCompletion(MediaPlayer mp) {
                             if (tryCount != 1) {
                                 tryCount--;

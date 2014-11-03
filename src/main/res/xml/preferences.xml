@@ -56,6 +56,11 @@
                 app:interval="1"
                 app:min="1"
                 android:max="10" />
+            <EditTextPreference
+                    android:title="名字"
+                    android:defaultValue="vicky"
+                    android:summary="孩子的英文名字"
+                    android:key="name" />
         </PreferenceCategory>
         <PreferenceCategory android:title="@string/pref_cat_backup" >
             <CheckBoxPreference
