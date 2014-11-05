@@ -19,13 +19,13 @@
 
 package com.nit.vicky.servicelayer;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import com.nit.utils.DiskUtil;
 import com.nit.vicky.AnkiDroidApp;
 import com.nit.vicky.multimediacard.IMultimediaEditableNote;
-import com.nit.vicky.multimediacard.fields.AudioField;
-import com.nit.vicky.multimediacard.fields.IField;
-import com.nit.vicky.multimediacard.fields.ImageField;
-import com.nit.vicky.multimediacard.fields.TextField;
+import com.nit.vicky.multimediacard.fields.*;
 import com.nit.vicky.multimediacard.impl.MultimediaEditableNote;
 import com.nit.libanki.Collection;
 import com.nit.libanki.Note;
@@ -129,7 +129,7 @@ public class NoteService {
      * 
      * @param note
      */
-    public static void saveMedia(final MultimediaEditableNote noteNew) {
+    public static void saveMedia(final MultimediaEditableNote noteNew, Context context) {
         // if (noteNew.getModelId() == noteOld.getModelId())
         // {
         // int fieldCount = noteNew.getNumberOfFields();
@@ -150,7 +150,7 @@ public class NoteService {
         int fieldCount = noteNew.getNumberOfFields();
         for (int i = 0; i < fieldCount; i++) {
             IField newField = noteNew.getField(i);
-            importMediaToDirectory(newField);
+            importMediaToDirectory(newField, context);
         }
         // }
     }
@@ -161,7 +161,7 @@ public class NoteService {
      * 
      * @param field
      */
-    private static void importMediaToDirectory(IField field) {
+    private static void importMediaToDirectory(IField field, Context context) {
         String tmpMediaPath = null;
         switch (field.getType()) {
             case AUDIO:
@@ -193,11 +193,19 @@ public class NoteService {
                     }
 
 
-                    File outFile = new File(mediaDir + inFile.getName().replaceAll(" ", "_"));
+                    //File outFile = new File(mediaDir + inFile.getName().replaceAll(" ", "_"));
 
-                    if (outFile.exists()) {
-                        outFile = File.createTempFile("imgsearch", ".jpg", DiskUtil.getStoringDirectory());
+                    //if (outFile.exists()) {
+
+                    File outFile = null;
+
+                    if (field.getType() == EFieldType.IMAGE) {
+                        outFile = File.createTempFile("imggallery", ".jpg", DiskUtil.getStoringDirectory());
+                    } else if (field.getType() == EFieldType.AUDIO) {
+                        outFile = File.createTempFile("soundgallery", ".mp3", DiskUtil.getStoringDirectory());
                     }
+
+                    //}
 
 
                         if (field.hasTemporaryMedia()) {
@@ -229,6 +237,9 @@ public class NoteService {
                                 break;
                         }
 
+                    Intent scanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    scanIntent.setData(Uri.fromFile(inFile));
+                    context.sendBroadcast(scanIntent);
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);

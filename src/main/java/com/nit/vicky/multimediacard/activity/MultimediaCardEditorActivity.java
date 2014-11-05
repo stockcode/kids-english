@@ -655,7 +655,7 @@ public class MultimediaCardEditorActivity extends Activity {
     private void save() {
         mEditorNote.setmData(mNote.getField(0).getName());
         Themes.showThemedToast(MultimediaCardEditorActivity.this, mEditorNote.getmData() + " saved", false);
-        NoteService.saveMedia((MultimediaEditableNote) mNote);
+        NoteService.saveMedia((MultimediaEditableNote) mNote, getApplicationContext());
         NoteService.updateJsonNoteFromMultimediaNote(mNote, mEditorNote);
 
         TaskListener listener = new TaskListener() {

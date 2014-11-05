@@ -3,7 +3,6 @@
     <item
         android:id="@+id/showhint"
         android:orderInCategory="100"
-        android:showAsAction="ifRoom|withText"
         android:title="提示"/>
     <item
         android:id="@+id/playsound"
