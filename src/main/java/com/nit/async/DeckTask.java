@@ -848,13 +848,13 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
         Resources res = AnkiDroidApp.getInstance().getBaseContext().getResources();
         Collection col = params[0].getCollection();
         String path = params[0].getString();
-        boolean sharedDeckImport = params[0].getBoolean();
+        boolean currDeckImport = params[0].getBoolean();
 
         ProgressCallback pc = null;
-        // don't report progress on shared deck import (or maybe should we?)
-        if (!sharedDeckImport) {
-            pc = new ProgressCallback(this, res);
-        }
+//        // don't report progress on shared deck import (or maybe should we?)
+//        if (!sharedDeckImport) {
+//            pc = new ProgressCallback(this, res);
+//        }
 
         int addedCount = -1;
         try {
@@ -862,14 +862,14 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
             AnkiDb ankiDB = col.getDb();
             ankiDB.getDatabase().beginTransaction();
             try {
-                addedCount = imp.run();
+                addedCount = imp.run(currDeckImport);
                 ankiDB.getDatabase().setTransactionSuccessful();
             } finally {
                 ankiDB.getDatabase().endTransaction();
-                if (sharedDeckImport) {
-                    File tmpFile = new File(path);
-                    tmpFile.delete();
-                }
+//                if (sharedDeckImport) {
+//                    File tmpFile = new File(path);
+//                    tmpFile.delete();
+//                }
             }
             if (addedCount >= 0) {
                 ankiDB.execute("VACUUM");

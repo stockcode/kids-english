@@ -1829,23 +1829,9 @@ public class DeckPicker extends FragmentActivity {
                 builder.setNeutralButton(res.getString(R.string.import_message_replace), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                    	Resources res = getResources();
-                    	StyledDialog.Builder builder = new StyledDialog.Builder(DeckPicker.this);
-                        builder.setTitle(res.getString(R.string.import_title));
-                        builder.setMessage(res.getString(R.string.import_message_replace_confirm, mImportPath));
-                        builder.setPositiveButton(res.getString(R.string.yes), new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-		                        DeckTask.launchDeckTask(DeckTask.TASK_TYPE_IMPORT_REPLACE, mImportReplaceListener,
-                                        new TaskData(AnkiDroidApp.getCol(), mImportPath));
-		                        mImportPath = null;
-							}
-                        	
-                        });
-                        builder.setNegativeButton(res.getString(R.string.no), null);
-                        builder.show();
+                        DeckTask.launchDeckTask(DeckTask.TASK_TYPE_IMPORT, mImportAddListener,
+                                new TaskData(AnkiDroidApp.getCol(), mImportPath, true));
+                        mImportPath = null;
                     }
                 });
                 builder.setNegativeButton(res.getString(R.string.cancel), null);

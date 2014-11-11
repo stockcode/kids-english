@@ -86,7 +86,7 @@ public class Anki2Importer {
         }
     }
 
-    public int run() {
+    public int run(boolean currDeckImport) {
         publishProgress(false, 0, 0, false);
         try {
             // extract the deck from the zip file
@@ -120,7 +120,7 @@ public class Anki2Importer {
             publishProgress(true, 0, 0, false);
             int cnt = -1;
             try {
-                cnt = _import();
+                cnt = _import(currDeckImport);
             } finally {
                 // do not close collection but close only db (in order not to confuse access counting in storage.java
                 // Note that the media database is still open and needs to be closed below.
@@ -163,7 +163,7 @@ public class Anki2Importer {
         mSrc = Storage.Collection(src);
 	}
 
-	private int _import() {
+	private int _import(boolean currDeckImport) {
 		mDecks = new HashMap<Long, Long>();
 		if (mDeckPrefix != null) {
 			long id = mDst.getDecks().id(mDeckPrefix);
@@ -175,7 +175,7 @@ public class Anki2Importer {
 		// Log.i(AnkiDroidApp.TAG, "Import - importing notes");
         _importNotes();
 		// Log.i(AnkiDroidApp.TAG, "Import - importing cards");
-        int cnt = _importCards();
+        int cnt = _importCards(currDeckImport);
 //		_importMedia();
 		// Log.i(AnkiDroidApp.TAG, "Import - finishing");
         publishProgress(true, 100, 100, false);
@@ -362,7 +362,7 @@ public class Anki2Importer {
 	/** Decks */
 
 	/* Given did in src col, return local id */
-	private long _did(long did) {
+	private long _did(long did, boolean currDeckImport) {
 		try {
 			// already converted?
 			if (mDecks.containsKey(did)) {
@@ -390,10 +390,13 @@ public class Anki2Importer {
                 }
                 head = head.concat(parents[i]);
                 long idInSrc = mSrc.getDecks().id(head);
-                _did(idInSrc);
+                _did(idInSrc,currDeckImport);
             }
             // create in local
-			long newid = mDst.getDecks().id(name);
+            long newid = mDst.getDecks().selected();
+
+            if (!currDeckImport)    newid = mDst.getDecks().id(name);
+
 			// pull conf over
 			if (g.has("conf") && g.getLong("conf") != 1) {
 				mDst.getDecks().updateConf(mSrc.getDecks().getConf(g.getLong("conf")));
@@ -415,7 +418,7 @@ public class Anki2Importer {
 
 	/** Cards */
 
-	private int _importCards() {
+	private int _importCards(boolean currDeckImport) {
 		// build map of (guid, ord) -> cid and used id cache
 		mCards = new HashMap<String, HashMap<Integer, Long>>();
 		HashMap<Long, Boolean> existing = new HashMap<Long, Boolean>();
@@ -490,7 +493,7 @@ public class Anki2Importer {
             	existing.put((Long) card[0], true);
             	// update cid, nid, etc
             	card[1] = mNotes.get(guid)[0];
-            	card[2] = _did((Long) card[2]);
+            	card[2] = _did((Long) card[2], currDeckImport);
             	card[4] = Utils.intNow();
             	card[5] = usn;
             	// review cards have a due date relative to collection
