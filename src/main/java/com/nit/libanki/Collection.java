@@ -781,7 +781,7 @@ public class Collection {
     }
 
     public boolean hasNote(String word) {
-        return mDb.queryScalar("select 1 FROM notes WHERE data ='" + word + "'", false) != 0;
+        return mDb.queryScalar("select 1 FROM notes WHERE data ='" + word.replaceAll("'","''") + "'", false) != 0;
     }
 
 
