@@ -99,13 +99,13 @@ public class QuizActivity extends AnkiActivity {
                 } else {
                     Sound.playErrSound(name, new Sound.PlayAllCompletionListener(0) {
                         public void onCompletion(MediaPlayer mp) {
-                            if (tryCount != 1) {
-                                tryCount--;
-                                return;
-                            }
-
-                            DeckTask.launchDeckTask(DeckTask.TASK_TYPE_ANSWER_CARD, mRenderCardHandler, new DeckTask.TaskData(mSched,
-                                    mCurrentCard, tryCount));
+//                            if (tryCount != 1) {
+//                                tryCount--;
+//                                return;
+//                            }
+//
+//                            DeckTask.launchDeckTask(DeckTask.TASK_TYPE_ANSWER_CARD, mRenderCardHandler, new DeckTask.TaskData(mSched,
+//                                    mCurrentCard, tryCount));
                         }
                     });
                 }
